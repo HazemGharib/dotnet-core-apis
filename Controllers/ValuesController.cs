@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using dotnet_core_apis.Model;
 using Microsoft.AspNetCore.Mvc;
 
 namespace dotnet_core_apis.Controllers
@@ -11,16 +12,26 @@ namespace dotnet_core_apis.Controllers
     {
         // GET api/values
         [HttpGet]
-        public IEnumerable<string> Get()
+        public IEnumerable<Values> Get()
         {
-            return new string[] { "value1", "value2" };
+            IEnumerable<Values> values;
+            using (var ctx = new core2apiv1Context())
+            {
+                values = ctx.Values.ToList();
+            }
+            return values;
         }
 
         // GET api/values/5
         [HttpGet("{id}")]
-        public string Get(int id)
+        public string Get(Guid id)
         {
-            return "value";
+            string value;
+            using (var ctx = new core2apiv1Context())
+            {
+                value = ctx.Values.FirstOrDefault(x => x.Id == id).Value;
+            }
+            return value;
         }
 
         // POST api/values
